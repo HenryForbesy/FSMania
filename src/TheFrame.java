@@ -1,0 +1,40 @@
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import java.awt.Rectangle;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import java.awt.CardLayout;
+
+public class TheFrame extends JFrame {
+
+	private JPanel contentPane;
+	private CardLayout cards = new CardLayout();	
+
+	public TheFrame(GUIController controller) {
+		loadProperties();
+	}
+	
+	private void loadProperties() {
+		contentPane = new JPanel(cards);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 872, 744);
+		setContentPane(contentPane);
+		
+	}
+	
+	public void showPanel(String panelToShow) {
+		cards.show(contentPane, panelToShow);
+	}
+	
+	
+	public void hidePanel(JPanel panelToHide) {
+		panelToHide.setVisible(false);
+	}
+	
+	public void addPanel(JPanel panel) {
+	
+	}
+
+}
