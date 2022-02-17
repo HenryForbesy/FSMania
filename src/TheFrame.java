@@ -28,13 +28,8 @@ public class TheFrame extends JFrame {
 		cards.show(contentPane, panelToShow);
 	}
 	
-	
-	public void hidePanel(JPanel panelToHide) {
-		panelToHide.setVisible(false);
-	}
-	
-	public void addPanel(JPanel panel) {
-	
+	public void addPanel(JPanel panelToAdd, String panelName) {
+		contentPane.add(panelToAdd, panelName);
 	}
 
 }

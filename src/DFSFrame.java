@@ -1,5 +1,9 @@
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.Shape;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -47,6 +51,7 @@ public class DFSFrame extends JFrame {
 	public DFSFrame() {
 		setElementProperties();
 		addEventListeners();
+		setVisible(true);
 	}
 	
 	public void setElementProperties() {
@@ -122,16 +127,18 @@ public class DFSFrame extends JFrame {
 		DesignPanel.addMouseListener(new MouseAdapter(){
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				System.out.println("Here");
 				int x = e.getX();
 				int y = e.getY();
-				addState(x, y);
+				GUIState guiStateToAdd = new GUIState("Test", x, y);
+				DesignPanel.add(guiStateToAdd);
+				guiStateToAdd.setVisible(true);
 			}
 		});
 	}
 	
+	
 	private void addState(int x, int y) {
-		System.out.println("Hello");
-		JLabel hello = new JLabel();
-		hello.setBounds(x, y, 50, 50);
+		
 	}
 }

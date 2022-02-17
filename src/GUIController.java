@@ -23,7 +23,6 @@ public class GUIController {
 			theFrame.setVisible(true);
 		}
 		addElementsToTheFrame();
-		hideElementsOnTheFrame();
 	}
 	
 	public TheFrame getTheFrame() {
@@ -57,9 +56,4 @@ public class GUIController {
 		theFrame.add(mainPanel, "mainPanel");
 		theFrame.add(selectionPanel, "selectionPanel");
 	}
-	
-	private void hideElementsOnTheFrame() {
-			theFrame.hidePanel(selectionPanel);
-	}
-
 }
