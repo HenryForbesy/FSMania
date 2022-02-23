@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JScrollPane;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
@@ -21,10 +22,13 @@ import javax.swing.UIManager;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Component;
 
 import java.util.ArrayList;
 
-public class DFSFrame extends JFrame {
+public class DFSFrame extends JPanel {
+	
+	private GUIController controller;
 
 	private JPanel contentPane;
 	private JTextField speedTextField = new JTextField();
@@ -34,7 +38,6 @@ public class DFSFrame extends JFrame {
 	private JPanel ControlPanel = new JPanel();
 	private JLabel runTimeLabel = new JLabel("Previous Runtime: ");
 	private JButton buttonRun = new JButton("Run Simulation");
-	
 	private JRadioButton rdbtnNewRadioButton = new JRadioButton("Step-by-step simulation");
 	private JLabel lblNewLabel = new JLabel("Simulation Speed (ms)");
 	private JLabel stringLabel = new JLabel("String to Validate");
@@ -44,32 +47,27 @@ public class DFSFrame extends JFrame {
 	private JLabel stringAcceptedLabel = new JLabel("String Was:");
 	private JLabel displayAcceptedLabel = new JLabel("");
 	
+	private int startX, startY, endX, endY;
+	
+	
+	
 	/**
 	 * Create the frame.
 	 */
 	
-	public DFSFrame() {
+	public DFSFrame(GUIController controllerRef) {
+		controller = controllerRef;
 		setElementProperties();
 		addEventListeners();
-		setVisible(true);
 	}
 	
-	public void setElementProperties() {
+	private void setElementProperties() {
+		setBounds(0, 0, 1041, 744);
+		setLayout(null);
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1041, 717);
-		
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-		
-		DesignPanel.setBounds(180, 5, 835, 662);
-		contentPane.add(DesignPanel);
-		
-		ControlPanel.setBounds(5, 5, 165, 662);
-		contentPane.add(ControlPanel);
+		ControlPanel.setBounds(10, 11, 198, 714);
 		ControlPanel.setLayout(null);
+		add(ControlPanel);
 		
 		runTimeLabel.setBounds(6, 11, 149, 22);
 		ControlPanel.add(runTimeLabel);
@@ -79,7 +77,7 @@ public class DFSFrame extends JFrame {
 		
 		speedTextField = new JTextField();
 		speedTextField.setText("10");
-		speedTextField.setBounds(111, 69, 44, 17);
+		speedTextField.setBounds(144, 68, 44, 17);
 		ControlPanel.add(speedTextField);
 		speedTextField.setColumns(10);
 		
@@ -121,6 +119,23 @@ public class DFSFrame extends JFrame {
 		displayAcceptedLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		displayAcceptedLabel.setBounds(10, 157, 145, 53);
 		ControlPanel.add(displayAcceptedLabel);
+		DesignPanel.setBounds(212, 11, 819, 714);
+		add(DesignPanel);
+		DesignPanel.setLayout(null);
+	}
+	
+	public void removeState(GUIState stateToRemove) {
+		Component[] componentList = DesignPanel.getComponents();
+		
+		for(Component c : componentList) {
+			if(c == stateToRemove) {
+				System.out.println("removing");
+				DesignPanel.remove(c);
+			}
+		}
+		
+		DesignPanel.revalidate();
+		DesignPanel.repaint();
 	}
 	
 	private void addEventListeners() {
@@ -130,11 +145,40 @@ public class DFSFrame extends JFrame {
 				System.out.println("Here");
 				int x = e.getX();
 				int y = e.getY();
-				GUIState guiStateToAdd = new GUIState("Test", x, y);
+				Component c = (Component) e.getSource();
+				GUIState guiStateToAdd = new GUIState(controller, "Test", x, y);
 				DesignPanel.add(guiStateToAdd);
-				guiStateToAdd.setVisible(true);
+				DesignPanel.repaint();
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				startX = e.getX();
+				startY = e.getY();
+				
+			}
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				GUITransition transitionToAdd = new GUITransition(startX, startY, endX, endY);
+				DesignPanel.add(transitionToAdd);
+				DesignPanel.repaint();
 			}
 		});
+			
+		DesignPanel.addMouseMotionListener(new MouseAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				endX = e.getX();
+				endY = e.getY();
+			}
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				endX = e.getX();
+				endY = e.getY();
+			}
+		});
+		
 	}
 	
 	

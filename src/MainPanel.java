@@ -60,7 +60,7 @@ public class MainPanel extends JPanel{
 		titleLbl.setFont(new Font("Tahoma", Font.PLAIN, 61));
 		titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		this.setBounds(0, 0, frameWidth, frameHeight);
+		setBounds(0, 0, frameWidth, frameHeight);
 			
 		buttonFSM.setBounds(frameWidth / 4, 55, frameWidth / 2, 54);
 		buttonLoad.setBounds(frameWidth / 4, 164, frameWidth / 2, 54);

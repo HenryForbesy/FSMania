@@ -13,8 +13,7 @@ public class GUIController {
 	private TheFrame theFrame;
 	private MainPanel mainPanel;
 	private FSMSelectionPanel selectionPanel;
-	
-	//private DFSPanel dfsPanel = new DFSPanel();
+	private DFSFrame dfsPanel;
 
 
 	public GUIController(boolean showFrame) {
@@ -37,23 +36,34 @@ public class GUIController {
 		return selectionPanel;
 	}
 	
-	//public DFSFrame getDFSPanel() {
-		//return dfsFrame;
-	//}
+	public DFSFrame getDFSPanel() {
+		return dfsPanel;
+	}
 	
 	
 	public void changePanel(String panelToShow) {
 		theFrame.showPanel(panelToShow);
 	}
 	
-	private void createSwingElements() {	
+	public void removeGUIState(GUIState stateToRemove) {
+		dfsPanel.removeState(stateToRemove);
+	}
+	
+	private void createSwingElements() {
 		theFrame = new TheFrame(controller);
-		mainPanel = new MainPanel(controller, (int) theFrame.getBounds().getWidth(), (int) theFrame.getBounds().getHeight());
+		int width = (int) theFrame.getBounds().getWidth();
+		int height = (int) theFrame.getBounds().getHeight();
+		
+		mainPanel = new MainPanel(controller, width, height);
 		selectionPanel = new FSMSelectionPanel(controller);
+		dfsPanel = new DFSFrame(controller);
+		
+		theFrame.showPanel("mainPanel");
 	}
 	
 	private void addElementsToTheFrame() {
-		theFrame.add(mainPanel, "mainPanel");
-		theFrame.add(selectionPanel, "selectionPanel");
+		theFrame.addPanel(dfsPanel, "dfsPanel");
+		theFrame.addPanel(selectionPanel, "selectionPanel");
+		theFrame.addPanel(mainPanel, "mainPanel");
 	}
 }

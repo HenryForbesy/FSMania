@@ -19,13 +19,14 @@ public class TheFrame extends JFrame {
 	private void loadProperties() {
 		contentPane = new JPanel(cards);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 872, 744);
+		setBounds(100, 100, 1041, 744);
 		setContentPane(contentPane);
 		
 	}
 	
 	public void showPanel(String panelToShow) {
 		cards.show(contentPane, panelToShow);
+		repaint();
 	}
 	
 	public void addPanel(JPanel panelToAdd, String panelName) {
