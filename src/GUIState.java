@@ -73,8 +73,24 @@ public class GUIState extends JComponent{
 		}
 	}
 	
-	private void removeState() {
-		controller.getDFSPanel().removeState(this);
+	public void setPressed() {
+		pressed = true;
+	}
+	
+	public void unSetPressed() {
+		pressed = false;
+	}
+	
+	public boolean getPressed() {
+		return pressed;
+	}
+	
+	private void mouseOnState() {
+		controller.setMouseOnState(this);
+	}
+	
+	private void mouseOffState() {
+		controller.setMouseOffState();
 	}
 	
 	@Override
@@ -82,40 +98,21 @@ public class GUIState extends JComponent{
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.draw(circle);
 		g2d.fill(circle);
-	}
+	}f
 	
 	private void addEventListeners() {
-		addMouseListener(new MouseAdapter(){
-			@Override
-			public void mousePressed(MouseEvent e) {
-				if(SwingUtilities.isRightMouseButton(e)) {
-					removeState();
-					System.out.println("Right click");
-				}
-				else {
-					pressed = true;
-					System.out.println("Left click");
-				}
-			}
-			
+		/**addMouseListener(new MouseAdapter(){
 			@Override
 			public void mouseEntered(MouseEvent e) {
+				mouseOnState();
 				System.out.println("Mouse entered");
 			}
-			
 			@Override
-			public void mouseReleased(MouseEvent e) {
-				released = true;
-				if(pressed != true) {
-					System.out.println("In the right one mate wayyy");
-				}
-				else {
-					System.out.println("Pressed and released");
-				}
-				pressed = false;
-				released = false;
+			public void mouseExited(MouseEvent e) {
+				mouseOffState();
+				System.out.println("Mouse exited");
 			}
-		});
+		});**/
 	}
 	
 }

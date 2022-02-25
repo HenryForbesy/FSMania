@@ -14,6 +14,8 @@ public class GUIController {
 	private MainPanel mainPanel;
 	private FSMSelectionPanel selectionPanel;
 	private DFSFrame dfsPanel;
+	
+	private GUIState stateWithMouse, originGUIState, ancestorGUIState;
 
 
 	public GUIController(boolean showFrame) {
@@ -47,6 +49,48 @@ public class GUIController {
 	
 	public void removeGUIState(GUIState stateToRemove) {
 		dfsPanel.removeState(stateToRemove);
+	}
+	
+	public GUIState getStateWithMouse() {
+		return stateWithMouse;
+	}
+	
+	public void setMouseOnState(GUIState stateToAdd) {
+		stateWithMouse = stateToAdd;
+	}
+	
+	public void setMouseOffState() {
+		stateWithMouse = null;
+	}
+	
+	public boolean mouseOnState() {
+		if(stateWithMouse == null) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	
+	public void addOriginGUIState(){//for the origin node of a transition
+		originGUIState = stateWithMouse;
+	}
+	
+	public void addAncestorGUIState() {
+		ancestorGUIState = stateWithMouse;
+	}
+	
+	public GUIState getOriginGUIState() {
+		return originGUIState;
+	}
+	
+	public GUIState getAncestorGUIState() {
+		return ancestorGUIState;
+	}
+	
+	public void emptyGUIStates() {
+		originGUIState = null;
+		ancestorGUIState = null;
 	}
 	
 	private void createSwingElements() {

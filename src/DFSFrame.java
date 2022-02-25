@@ -140,29 +140,47 @@ public class DFSFrame extends JPanel {
 	
 	private void addEventListeners() {
 		DesignPanel.addMouseListener(new MouseAdapter(){
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.out.println("Here");
-				int x = e.getX();
-				int y = e.getY();
-				Component c = (Component) e.getSource();
-				GUIState guiStateToAdd = new GUIState(controller, "Test", x, y);
-				DesignPanel.add(guiStateToAdd);
-				DesignPanel.repaint();
-			}
 			
 			@Override
 			public void mousePressed(MouseEvent e) {
-				startX = e.getX();
-				startY = e.getY();
+				if(controller.mouseOnState()) {
+					GUIState stateWithMouse = controller.getStateWithMouse();
+					stateWithMouse.setPressed();
+					controller.addOriginGUIState();
+				}
+				else {
+					
+				}
 				
 			}
 			
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				GUITransition transitionToAdd = new GUITransition(startX, startY, endX, endY);
-				DesignPanel.add(transitionToAdd);
-				DesignPanel.repaint();
+				if(controller.mouseOnState()) {
+					GUIState stateWithMouse = controller.getStateWithMouse();
+					if(controller.getOriginGUIState() != null){
+						if(stateWithMouse.getPressed() != true) {
+							controller.addAncestorGUIState();
+						}
+						else {
+							controller.emptyGUIStates();
+						}
+					}
+				}
+				else {
+					if(controller.getOriginGUIState() != null) {cf
+						controller.emptyGUIStates();
+					}
+					else {
+						System.out.println("Here");
+						int x = e.getX();
+						int y = e.getY();
+						Component c = (Component) e.getSource();
+						GUIState guiStateToAdd = new GUIState(controller, "Test", x, y);
+						DesignPanel.add(guiStateToAdd);
+						DesignPanel.repaint();
+					}
+				}
 			}
 		});
 			
