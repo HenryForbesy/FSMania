@@ -124,6 +124,18 @@ public class DFSFrame extends JPanel {
 		DesignPanel.setLayout(null);
 	}
 	
+	public void addState(int x, int y) {
+		GUIState guiStateToAdd = new GUIState(controller, "Test", x, y);
+		DesignPanel.add(guiStateToAdd);
+		DesignPanel.repaint();
+	}
+	
+	public void addTransition(GUITransition transitionToAdd) {
+		DesignPanel.add(transitionToAdd);
+		DesignPanel.revalidate();
+		DesignPanel.repaint();
+	}
+	
 	public void removeState(GUIState stateToRemove) {
 		Component[] componentList = DesignPanel.getComponents();
 		
@@ -141,48 +153,21 @@ public class DFSFrame extends JPanel {
 	private void addEventListeners() {
 		DesignPanel.addMouseListener(new MouseAdapter(){
 			
+			
 			@Override
 			public void mousePressed(MouseEvent e) {
-				if(controller.mouseOnState()) {
-					GUIState stateWithMouse = controller.getStateWithMouse();
-					stateWithMouse.setPressed();
-					controller.addOriginGUIState();
-				}
-				else {
-					
-				}
-				
+				//Nothing (yet)
 			}
 			
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				if(controller.mouseOnState()) {
-					GUIState stateWithMouse = controller.getStateWithMouse();
-					if(controller.getOriginGUIState() != null){
-						if(stateWithMouse.getPressed() != true) {
-							controller.addAncestorGUIState();
-						}
-						else {
-							controller.emptyGUIStates();
-						}
-					}
-				}
-				else {
-					if(controller.getOriginGUIState() != null) {cf
-						controller.emptyGUIStates();
-					}
-					else {
-						System.out.println("Here");
-						int x = e.getX();
-						int y = e.getY();
-						Component c = (Component) e.getSource();
-						GUIState guiStateToAdd = new GUIState(controller, "Test", x, y);
-						DesignPanel.add(guiStateToAdd);
-						DesignPanel.repaint();
-					}
-				}
+				System.out.println("Here");
+				int x = e.getX();
+				int y = e.getY();
+				addState(x, y);
+				System.out.println();
 			}
-		});
+	});
 			
 		DesignPanel.addMouseMotionListener(new MouseAdapter() {
 			@Override
@@ -196,11 +181,6 @@ public class DFSFrame extends JPanel {
 				endY = e.getY();
 			}
 		});
-		
-	}
-	
-	
-	private void addState(int x, int y) {
 		
 	}
 }

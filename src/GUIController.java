@@ -72,12 +72,18 @@ public class GUIController {
 		}
 	}
 	
-	public void addOriginGUIState(){//for the origin node of a transition
+	public void addOriginGUIState(){  //for the origin node of a transition
 		originGUIState = stateWithMouse;
 	}
 	
 	public void addAncestorGUIState() {
 		ancestorGUIState = stateWithMouse;
+	}
+	
+	public void addGUITransition() {
+		GUITransition transitionToAdd = originGUIState.addTransition("", ancestorGUIState);
+		dfsPanel.addTransition(transitionToAdd);
+		//emptyGUIStates();
 	}
 	
 	public GUIState getOriginGUIState() {
@@ -87,6 +93,7 @@ public class GUIController {
 	public GUIState getAncestorGUIState() {
 		return ancestorGUIState;
 	}
+	
 	
 	public void emptyGUIStates() {
 		originGUIState = null;
