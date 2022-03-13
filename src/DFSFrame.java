@@ -23,6 +23,9 @@ import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
 
 import java.util.ArrayList;
 
@@ -34,7 +37,7 @@ public class DFSFrame extends JPanel {
 	private JTextField speedTextField = new JTextField();
 	private JTextField txtHello = new JTextField();
 	private ArrayList listOfStates = new ArrayList(); 
-	private JPanel DesignPanel = new JPanel();
+	private DesignPanel designPanel;
 	private JPanel ControlPanel = new JPanel();
 	private JLabel runTimeLabel = new JLabel("Previous Runtime: ");
 	private JButton buttonRun = new JButton("Run Simulation");
@@ -47,19 +50,19 @@ public class DFSFrame extends JPanel {
 	private JLabel stringAcceptedLabel = new JLabel("String Was:");
 	private JLabel displayAcceptedLabel = new JLabel("");
 	
-	private int startX, startY, endX, endY;
-	
 	
 	
 	/**
-	 * Create the frame.
+	 * Create the panel.
 	 */
 	
 	public DFSFrame(GUIController controllerRef) {
 		controller = controllerRef;
 		setElementProperties();
-		addEventListeners();
+		//addEventListeners();
 	}
+	
+	//Set the properties for the elements
 	
 	private void setElementProperties() {
 		setBounds(0, 0, 1041, 744);
@@ -119,39 +122,24 @@ public class DFSFrame extends JPanel {
 		displayAcceptedLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		displayAcceptedLabel.setBounds(10, 157, 145, 53);
 		ControlPanel.add(displayAcceptedLabel);
-		DesignPanel.setBounds(212, 11, 819, 714);
-		add(DesignPanel);
-		DesignPanel.setLayout(null);
-	}
-	
-	public void addState(int x, int y) {
-		GUIState guiStateToAdd = new GUIState(controller, "Test", x, y);
-		DesignPanel.add(guiStateToAdd);
-		DesignPanel.repaint();
-	}
-	
-	public void addTransition(GUITransition transitionToAdd) {
-		DesignPanel.add(transitionToAdd);
-		DesignPanel.revalidate();
-		DesignPanel.repaint();
-	}
-	
-	public void removeState(GUIState stateToRemove) {
-		Component[] componentList = DesignPanel.getComponents();
 		
-		for(Component c : componentList) {
-			if(c == stateToRemove) {
-				System.out.println("removing");
-				DesignPanel.remove(c);
-			}
-		}
-		
-		DesignPanel.revalidate();
-		DesignPanel.repaint();
+		designPanel = new DesignPanel(controller);
+		add(designPanel);
 	}
 	
-	private void addEventListeners() {
-		DesignPanel.addMouseListener(new MouseAdapter(){
+	//return the designPanel
+	
+	public DesignPanel getDesignPanel() {
+		return designPanel;
+	}
+	
+	//remove a state works by going through all the components on the designPanel 
+	
+	
+}
+	
+/**	private void addEventListeners() {
+		designPanel.addMouseListener(new MouseAdapter(){
 			
 			
 			@Override
@@ -169,7 +157,7 @@ public class DFSFrame extends JPanel {
 			}
 	});
 			
-		DesignPanel.addMouseMotionListener(new MouseAdapter() {
+		designPanel.addMouseMotionListener(new MouseAdapter() {
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				endX = e.getX();
@@ -179,8 +167,12 @@ public class DFSFrame extends JPanel {
 			public void mouseDragged(MouseEvent e) {
 				endX = e.getX();
 				endY = e.getY();
+				repaint();
 			}
 		});
 		
 	}
-}
+	**/
+	
+
+

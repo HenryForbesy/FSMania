@@ -8,6 +8,9 @@ import java.awt.Shape;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.BasicStroke;
+import java.awt.Color;
+
 import java.util.*;
 
 public class GUIState extends JComponent{
@@ -18,7 +21,12 @@ public class GUIState extends JComponent{
 	private int y;
 	private List<GUITransition> guiTransitions = new ArrayList<GUITransition>();
 	private boolean accepting;
+	private boolean initialState;
+	private boolean mouseOnState = true;
+	
+	
 	Shape circle;
+	Shape acceptingCircle;
 	
 	public GUIState(GUIController controllerRef, String tempName, int xCoord, int yCoord) {
 		name = tempName;
@@ -29,13 +37,14 @@ public class GUIState extends JComponent{
 		setSize(100, 100);
 		setLocation(x - 50, y - 50);
 		
-		circle = new Ellipse2D.Double(0, 0, 100, 100);
+		circle = new Ellipse2D.Double(5, 5, 90, 90);
+		acceptingCircle = new Ellipse2D.Double(10, 10, 80, 80);
 		
 		addEventListeners();
 	}
 	
 	public GUITransition addTransition(String tempInput, GUIState tempAncestor) {
-		GUITransition guiTransitionToAdd = new GUITransition(this, tempInput, tempAncestor);
+		GUITransition guiTransitionToAdd = new GUITransition(controller, this, tempInput, tempAncestor);
 		guiTransitions.add(guiTransitionToAdd);
 		return guiTransitionToAdd;
 	}
@@ -58,6 +67,7 @@ public class GUIState extends JComponent{
 	
 	public void setAccepting() {
 		accepting = true;
+		System.out.println("Hello");
 	}
 	
 	public void setNonAccepting() {
@@ -75,10 +85,14 @@ public class GUIState extends JComponent{
 	
 	private void mouseOnState() {
 		controller.setMouseOnState(this);
+		mouseOnState = true;
+		repaint();
 	}
 	
 	private void mouseOffState() {
 		controller.setMouseOffState();
+		mouseOnState = false;
+		repaint();
 	}
 	
 	private void beginDrawingLine() {
@@ -92,38 +106,71 @@ public class GUIState extends JComponent{
 		}
 	}
 	
+	private void removeThis() {
+		controller.removeGUIState(this);
+	}
+	
 	@Override
 	public void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.draw(circle);
-		g2d.fill(circle);
+		
+		
+		
+		if(!accepting && !initialState && !mouseOnState) { //regular state. Just a black circle
+			g2d.setPaint(Color.black);
+			g2d.setStroke(new BasicStroke(10));
+			
+			g2d.draw(circle);
+			g2d.fill(circle);
+		}
+		else if(!accepting && !initialState && mouseOnState) { //regular state with mouse on. White circle with black outline
+			g2d.setPaint(Color.black);
+			g2d.setStroke(new BasicStroke(10));
+			
+			g2d.draw(circle);
+			
+			g2d.setPaint(Color.gray);
+			g2d.fill(circle);
+		}
 	}
 	
 	private void addEventListeners() {
 		addMouseListener(new MouseAdapter(){
 			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(SwingUtilities.isRightMouseButton(e)) {
+					removeThis();
+				}
+				if(e.getClickCount() == 2) {
+					setAccepting();
+				}
+			}
+			@Override
 			public void mousePressed(MouseEvent e) {
 				beginDrawingLine();
 				if(controller.getOriginGUIState() != null) {
-					System.out.println("Origin added");
+					//System.out.println("Origin added");
 				}
 			}
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				finishDrawingLine();
-				if(controller.getAncestorGUIState() != null) {
-					System.out.println("Ancestor added");
+				if(SwingUtilities.isRightMouseButton(e)) {
+					removeThis();
+				}
+				else {
+					finishDrawingLine();
+					if(controller.getAncestorGUIState() != null) {
+						//System.out.println("Ancestor added");
+					}
 				}
 			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				mouseOnState();
-				System.out.println("Mouse Entered");
 				}
 			@Override
 			public void mouseExited(MouseEvent e) {
 				mouseOffState();
-				System.out.println("Mouse exited");
 			}
 		});
 	}
