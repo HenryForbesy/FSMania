@@ -21,7 +21,7 @@ public class GUIState extends JComponent{
 	private int y;
 	private List<GUITransition> guiTransitions = new ArrayList<GUITransition>();
 	private boolean accepting;
-	private boolean initialState;
+	private boolean isInitialState;
 	private boolean mouseOnState = true;
 	
 	
@@ -61,6 +61,10 @@ public class GUIState extends JComponent{
 		return circle;
 	}
 	
+	public boolean getIsInitialState() {
+		return isInitialState;
+	}
+	
 	public List<GUITransition> getTransitions(){
 		return guiTransitions;
 	}
@@ -68,6 +72,7 @@ public class GUIState extends JComponent{
 	public void setAccepting() {
 		accepting = true;
 		System.out.println("Hello");
+		repaint();
 	}
 	
 	public void setNonAccepting() {
@@ -81,6 +86,18 @@ public class GUIState extends JComponent{
 		else {
 			accepting = true;
 		}
+		repaint();
+	}
+	
+	public void toggleInitialState() {
+		if(isInitialState == true) {
+			isInitialState = false;
+		}
+		else {
+			isInitialState = true;
+		}
+		controller.changeInitialGUIState(this);
+		repaint();
 	}
 	
 	private void mouseOnState() {
@@ -114,16 +131,14 @@ public class GUIState extends JComponent{
 	public void paintComponent(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		
-		
-		
-		if(!accepting && !initialState && !mouseOnState) { //regular state. Just a black circle
+		if(!accepting && !mouseOnState) { //regular state. Just a black circle
 			g2d.setPaint(Color.black);
 			g2d.setStroke(new BasicStroke(10));
 			
 			g2d.draw(circle);
 			g2d.fill(circle);
 		}
-		else if(!accepting && !initialState && mouseOnState) { //regular state with mouse on. White circle with black outline
+		else if(!accepting && mouseOnState) { //regular state with mouse on. White circle with black outline
 			g2d.setPaint(Color.black);
 			g2d.setStroke(new BasicStroke(10));
 			
@@ -131,6 +146,30 @@ public class GUIState extends JComponent{
 			
 			g2d.setPaint(Color.gray);
 			g2d.fill(circle);
+		}
+		else if(accepting && !mouseOnState) { //regular accepting state
+			g2d.setPaint(Color.black);
+			g2d.setStroke(new BasicStroke(10));
+			
+			g2d.draw(circle);
+			g2d.fill(circle);
+			
+			g2d.setPaint(Color.gray);
+			g2d.setStroke(new BasicStroke(5));
+			
+			g2d.draw(acceptingCircle);
+		}
+		else if(accepting && mouseOnState) { //regular accepting state with mouse on
+			g2d.setPaint(Color.gray);
+			g2d.setStroke(new BasicStroke(10));
+			
+			g2d.draw(circle);
+			g2d.fill(circle);
+			
+			g2d.setPaint(Color.black);
+			g2d.setStroke(new BasicStroke(5));
+			
+			g2d.draw(acceptingCircle);
 		}
 	}
 	
@@ -141,8 +180,11 @@ public class GUIState extends JComponent{
 				if(SwingUtilities.isRightMouseButton(e)) {
 					removeThis();
 				}
-				if(e.getClickCount() == 2) {
-					setAccepting();
+				else if(SwingUtilities.isMiddleMouseButton(e)) {
+					toggleInitialState();
+				}
+				else if(e.getClickCount() == 2) {
+					toggleAccepting();
 				}
 			}
 			@Override

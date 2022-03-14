@@ -15,7 +15,10 @@ public class DesignPanel extends JPanel{
 	
 	private GUIController controller;
 	private List<GUITransition> guiTransitions = new ArrayList<GUITransition>();
+	private List<GUIState> guiStates = new ArrayList<GUIState>();
 	private List<Shape> transitionLines = new ArrayList<Shape>();
+	private List<Shape> initialStateArrowLines = new ArrayList<Shape>();
+	private GUIState initialState;
 	
 	DesignPanel(GUIController controllerRef){
 		setLayout(null);
@@ -31,18 +34,22 @@ public class DesignPanel extends JPanel{
 	public void addState(int x, int y) {
 		GUIState guiStateToAdd = new GUIState(controller, "Test", x, y);
 		add(guiStateToAdd);
+		guiStates.add(guiStateToAdd);
 		revalidate();
 		repaint();
 	}
 	
 	public void removeState(GUIState stateToRemove) {
-		Component[] componentList = getComponents();
-		
-		for(Component c : componentList) {
-			if(c == stateToRemove) {
+		for(int i = 0; i < guiStates.size(); i++) {
+			if(guiStates.get(i) == stateToRemove) {
+				if(stateToRemove.getIsInitialState()){
+					initialStateArrowLines.clear();
+					initialState = null;
+					controller.setInitialGUIState(null);
+				}
 				controller.removeGUITransitions(stateToRemove);
-				remove(c);
-				c = null;
+				remove(stateToRemove);
+				stateToRemove = null;
 			}
 		}
 		
@@ -75,9 +82,21 @@ public class DesignPanel extends JPanel{
 			if(stateRemoved == guiTransitions.get(i).getOrigin() || stateRemoved == guiTransitions.get(i).getAncestor()) {
 				guiTransitions.remove(i);
 				transitionLines.remove(i);
-				i = i - 1; //arrayList has shrunk with removal. reduce i by 1 to not skip 
+				i = i - 1; //arrayList has shrunk with removal. reduce i by 1 to not skip an element
 			}
 		}
+	}
+	
+	public void changeInitialState(GUIState newInitialState) {
+		initialState = newInitialState;
+		createArrowLines();
+	}
+	
+	private void createArrowLines() {
+		initialStateArrowLines.clear();
+		Shape mainLine = new Line2D.Double(initialState.getX() - 25, initialState.getY() + 50, initialState.getX(), initialState.getY() + 50);
+		initialStateArrowLines.add(mainLine);
+		repaint();
 	}
 	
 	private void setProperties() {
@@ -130,6 +149,12 @@ public class DesignPanel extends JPanel{
 		for(Shape line : transitionLines) {
 			g2d.draw(line);
 			g2d.fill(line);
+		}
+		
+		if(initialState != null) {
+			for(Shape line : initialStateArrowLines) {
+				g2d.draw(line);
+			}
 		}
 		
 	}

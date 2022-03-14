@@ -16,6 +16,8 @@ public class GUIController {
 	private DFSFrame dfsPanel;
 	
 	private GUIState stateWithMouse, originGUIState, ancestorGUIState;
+	
+	private GUIState initialState;
 
 	public GUIController(boolean showFrame) {
 		if (!showFrame) {
@@ -105,6 +107,18 @@ public class GUIController {
 	public void emptyGUIStates() {
 		originGUIState = null;
 		ancestorGUIState = null;
+	}
+	
+	public void setInitialGUIState(GUIState newInitialState) {
+		initialState = newInitialState;
+	}
+	
+	public void changeInitialGUIState(GUIState newInitialState) {
+		if(initialState != null) {
+			initialState.toggleInitialState();
+		}
+		initialState = newInitialState;
+		dfsPanel.getDesignPanel().changeInitialState(initialState);
 	}
 	
 	public float distanceFromPoint(float x, float y, float x1, float y1, float x2, float y2) {
